@@ -16,24 +16,17 @@ public class ParseWebsite {
 	private Document document;
 	private List<Element> listElements;
 	
-	/* Constructor default, if no define document 
-	 * */
-	public ParseWebsite() throws IOException {
-		this("https://tiki.vn/dien-thoai-bphone-3-pro-hang-chinh-hang-p68521343.html");
-	}
-
-	
 	public ParseWebsite(String url) {
 		try {
 //			document = Jsoup.connect(url).ignoreHttpErrors(true).get();
 			document = Jsoup.connect(url).get();
-		} catch (IOException e) {
+		} catch (IOException e) {      // Jsuop k chay dc thi crawl bang drive
 			SeleniumCrawler parseSelenium = new SeleniumCrawler();
 			String htmlSource = parseSelenium.getHTMLSource(url);
 			document = Jsoup.parse(htmlSource);
 		}
 		
-		listElements = new ArrayList<Element>();
+		listElements = new ArrayList<>();
 		TITLE = document.title();
 		
 		buildAllContent();	

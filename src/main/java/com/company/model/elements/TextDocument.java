@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TextDocument {
+
 	List<TextBlock> listTextBlocks;
 	ClassifierAlgorithms algorithm;
 	ClassifierAlgorithms algorithm1;

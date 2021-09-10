@@ -25,11 +25,11 @@ public class Test {
             }
         }
 
-        System.out.println("\n ------------------------------------\n| content / total (Block) = " + cnt + " / " + listTextBlock.size() + " |");
+        System.out.println("\n ------------------------------------\n| content / total (Block) = " + cnt + " / " + listTextBlock.size() + " |\n ------------------------------------");
 
     }
 
     public static void main(String[] args) throws IOException {
-        Test.run("https://batdongsan.com.vn/ban-can-ho-chung-cu-duong-dien-bien-phu-phuong-25-prj-khu-phuc-hop-152-dien-bien-phu/ban-152-nhan-nha-2021-thanh-toan-1-7-ty-nhan-nha-chiet-khau-8-5-0776254588-pr29535244");
+        Test.run("https://vn.tradingview.com/markets/stocks-vietnam/sectorandindustry-sector/");
     }
 }
