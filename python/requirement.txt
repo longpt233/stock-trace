@@ -1,0 +1,5 @@
+pandas
+numpy
+bs4
+requests==2.3.0
+lxml

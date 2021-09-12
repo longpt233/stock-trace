@@ -56,7 +56,9 @@ public class CrawlCompany {
 
             for (Element it : data) {
                 String id = it.select("td:nth-child(1)").text().split(" ")[1];
-                Company company = new Company(id, category);
+                String price = it.select("td:nth-child(2)").text();
+                String soNhanVien = it.select("td:nth-child(10)").text();
+                Company company = new Company(id, category,Double.parseDouble(price), soNhanVien);
                 companies.add(company);
             }
         } catch (IOException ex) {
