@@ -1,20 +1,31 @@
 from crawl import DataLoaderCAFE
 
-# loader = DataLoaderCAFE(symbol= "ACB", start="2021-02-01", end="2021-03-01")
-# try:
-#     data = loader.download()
-#     data = data[::-1]
-#     data.to_csv("../../data/csv-30/"+"ACB"+".csv",index=False,header=False, mode= 'a')
-# except:
-#     print("err ")
+symboi ="AAS"
 
-line = "2021-09-12 1"
-last_time_crawl= str(line).split(" ")[0]
-print(last_time_crawl)
+loader = DataLoaderCAFE(symbol=symboi, start="2021-09-10", end="2021-09-10")
+try:
+    data = loader.download()
+    data = data[::-1]
+    print(data.head(1))
+    data.to_csv("../../data/csv-30/"+symboi+".csv",index=False,header=True, mode= 'a')
+except:
+    print("err ")
 
-import datetime
+# line = "2021-09-12 1"
+# last_time_crawl= str(line).split(" ")[0]
+# print(last_time_crawl)
 
-last_time_crawl = datetime.datetime.strptime(last_time_crawl+  ' 1:33PM', '%Y-%m-%d %I:%M%p')
+# import datetime
 
-today = str(last_time_crawl + datetime.timedelta(days=1)).split(" ")[0]
+# last_time_crawl = datetime.datetime.strptime(last_time_crawl+  ' 1:33PM', '%Y-%m-%d %I:%M%p')
+
+# today = str(last_time_crawl + datetime.timedelta(days=1)).split(" ")[0]
+
+
+loader = DataLoaderVnDirect(symbol="AAM", start="2010-10-10", end="2021-09-15")
+try:
+    data = loader.download()[::-1] # to revert 
+    data.to_csv("../../data/vndirect/csv-10-30/"+"AAM"+".csv",index=True,header=False)
+except:
+    print("err ")
 

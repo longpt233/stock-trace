@@ -1,0 +1,76 @@
+import utils
+import pandas as pd 
+import requests   
+import datetime 
+
+class DataLoaderVnDirect():
+    def __init__(self, symbol, start, end, *arg, **karg):
+        self.symbol = symbol
+        self.start = utils.convert_text_dateformat(start, new_type = '%d/%m/%Y')
+        self.end = utils.convert_text_dateformat(end, new_type = '%d/%m/%Y') 
+
+
+    def download(self):
+        start_date = utils.convert_text_dateformat(self.start, origin_type = '%d/%m/%Y', new_type = '%Y-%m-%d')
+        end_date = utils.convert_text_dateformat(self.end, origin_type = '%d/%m/%Y', new_type = '%Y-%m-%d')
+        API_VNDIRECT = 'https://finfo-api.vndirect.com.vn/v4/stock_prices/'
+        query = 'code:' + self.symbol + '~date:gte:' + start_date + '~date:lte:' + end_date
+        delta = datetime.datetime.strptime(end_date, '%Y-%m-%d') - datetime.datetime.strptime(start_date, '%Y-%m-%d')
+        params = {
+            "sort": "date",
+            "size": delta.days + 1,
+            "page": 1,
+            "q": query
+        }
+        res = requests.get(API_VNDIRECT, params=params)
+        data = res.json()['data']  
+        data = pd.DataFrame(data)
+        stock_data = data[['date', 'adClose', 'close', 'pctChange', 'average', 'nmVolume',
+                        'nmValue', 'ptVolume', 'ptValue', 'open', 'high', 'low']].copy()
+        stock_data.columns = ['date', 'adjust', 'close', 'change_perc', 'avg',
+                        'volume_match', 'value_match', 'volume_reconcile', 'value_reconcile',
+                        'open', 'high', 'low']
+
+        stock_data = stock_data.set_index('date').apply(pd.to_numeric, errors='coerce')
+        stock_data.index = list(map(utils.convert_date, stock_data.index))
+        stock_data.index.name = 'date'
+        stock_data = stock_data.sort_index()
+        stock_data.fillna(0, inplace=True)
+        stock_data['volume'] = stock_data.volume_match + stock_data.volume_reconcile
+  
+
+        return stock_data
+
+import csv
+
+
+
+if __name__ == "__main__":
+    
+    
+    yesterday = str(datetime.datetime.now() - datetime.timedelta(days=1)).split(" ")[0]
+
+    next_day_of_last_time = ''
+    with open('../../data/vndirect/csv-10-30/1-log-crawl.txt', 'rt') as f:
+        for line in f:
+            pass
+        last_time_crawl= str(line).split(" ")[0]
+        last_time_crawl = datetime.datetime.strptime(last_time_crawl+  ' 1:33PM', '%Y-%m-%d %I:%M%p')
+        next_day_of_last_time = str(last_time_crawl + datetime.timedelta(days=1)).split(" ")[0]
+
+
+    it = 0
+    with open('../../data/company/company-list.csv', 'rt') as f:
+        data = csv.reader(f)
+        for row in data:
+            if int(float(row[2]))>10000 and int(float(row[2]))< 30000 :
+                it = it +1 
+                loader = DataLoaderVnDirect(symbol= row[0], start=next_day_of_last_time, end=yesterday)
+                try:
+                    data = loader.download()
+                    data.to_csv("../../data/vndirect/csv-10-30/"+row[0]+".csv",index=True,mode= 'a',header=False)
+                except:
+                    print("err at {}".format(row[0]))
+
+    with open('../../data/vndirect/csv-10-30/1-log-crawl.txt', 'a') as f:
+        f.write('\n{} : crawl from {}, crawl {} company '.format(yesterday,next_day_of_last_time,it))
