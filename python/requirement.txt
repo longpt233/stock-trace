@@ -1,5 +1,11 @@
+tensorflow== 2.5.1
 pandas
-numpy
 bs4
-requests==2.3.0
+requests
 lxml
+selenium
+matplotlib
+scikit-learn
+keras
+investpy
+numpy 

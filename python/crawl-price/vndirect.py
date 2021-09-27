@@ -50,8 +50,10 @@ if __name__ == "__main__":
     
     yesterday = str(datetime.datetime.now() - datetime.timedelta(days=1)).split(" ")[0]
 
+    dir_csv = "all"
+
     next_day_of_last_time = ''
-    with open('../../data/vndirect/csv-10-30/1-log-crawl.txt', 'rt') as f:
+    with open('../../data/vndirect/'+dir_csv+'/1-log-crawl.txt', 'rt') as f:
         for line in f:
             pass
         last_time_crawl= str(line).split(" ")[0]
@@ -63,14 +65,14 @@ if __name__ == "__main__":
     with open('../../data/company/company-list.csv', 'rt') as f:
         data = csv.reader(f)
         for row in data:
-            if int(float(row[2]))>10000 and int(float(row[2]))< 30000 :
+            # if int(float(row[2]))>10000 and int(float(row[2]))< 30000 :
                 it = it +1 
                 loader = DataLoaderVnDirect(symbol= row[0], start=next_day_of_last_time, end=yesterday)
                 try:
                     data = loader.download()
-                    data.to_csv("../../data/vndirect/csv-10-30/"+row[0]+".csv",index=True,mode= 'a',header=False)
+                    data.to_csv("../../data/vndirect/"+dir_csv+"/"+row[0]+".csv",index=True,mode= 'a',header=False)
                 except:
                     print("err at {}".format(row[0]))
 
-    with open('../../data/vndirect/csv-10-30/1-log-crawl.txt', 'a') as f:
+    with open('../../data/vndirect/'+dir_csv+'/1-log-crawl.txt', 'a') as f:
         f.write('\n{} : crawl from {}, crawl {} company '.format(yesterday,next_day_of_last_time,it))
