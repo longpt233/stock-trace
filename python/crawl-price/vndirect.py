@@ -43,10 +43,7 @@ class DataLoaderVnDirect():
 
 import csv
 
-
-
 if __name__ == "__main__":
-    
     
     yesterday = str(datetime.datetime.now() - datetime.timedelta(days=1)).split(" ")[0]
 

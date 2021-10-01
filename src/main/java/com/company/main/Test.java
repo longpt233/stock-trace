@@ -30,6 +30,6 @@ public class Test {
     }
 
     public static void main(String[] args) throws IOException {
-        Test.run("https://vn.tradingview.com/markets/stocks-vietnam/sectorandindustry-sector/");
+        Test.run("https://vnexpress.net/co-phieu-vingroup-do-thi-truong-4364875.html");
     }
 }

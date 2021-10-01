@@ -1,15 +1,15 @@
-from crawl import DataLoaderCAFE
-
-symboi ="AAS"
-
-loader = DataLoaderCAFE(symbol=symboi, start="2021-09-10", end="2021-09-10")
-try:
-    data = loader.download()
-    data = data[::-1]
-    print(data.head(1))
-    data.to_csv("../../data/csv-30/"+symboi+".csv",index=False,header=True, mode= 'a')
-except:
-    print("err ")
+# from crawl import DataLoaderCAFE
+#
+# symboi ="AAS"
+#
+# loader = DataLoaderCAFE(symbol=symboi, start="2021-09-10", end="2021-09-10")
+# try:
+#     data = loader.download()
+#     data = data[::-1]
+#     print(data.head(1))
+#     data.to_csv("../../data/csv-30/"+symboi+".csv",index=False,header=True, mode= 'a')
+# except:
+#     print("err ")
 
 # line = "2021-09-12 1"
 # last_time_crawl= str(line).split(" ")[0]
@@ -21,6 +21,8 @@ except:
 
 # today = str(last_time_crawl + datetime.timedelta(days=1)).split(" ")[0]
 
+
+from vndirect import DataLoaderVnDirect
 
 loader = DataLoaderVnDirect(symbol="AAM", start="2010-10-10", end="2021-09-15")
 try:
