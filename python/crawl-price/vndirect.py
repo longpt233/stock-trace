@@ -2,28 +2,57 @@ import utils
 import pandas as pd 
 import requests   
 import datetime 
+from selenium import webdriver
+
+import json
 
 class DataLoaderVnDirect():
     def __init__(self, symbol, start, end, *arg, **karg):
         self.symbol = symbol
         self.start = utils.convert_text_dateformat(start, new_type = '%d/%m/%Y')
         self.end = utils.convert_text_dateformat(end, new_type = '%d/%m/%Y') 
+        option = webdriver.ChromeOptions()
+        # option.add_argument('headless')
+        self.driver = webdriver.Chrome("../../chromedriver/chromedriver_linux",options= option)
 
 
     def download(self):
         start_date = utils.convert_text_dateformat(self.start, origin_type = '%d/%m/%Y', new_type = '%Y-%m-%d')
         end_date = utils.convert_text_dateformat(self.end, origin_type = '%d/%m/%Y', new_type = '%Y-%m-%d')
         API_VNDIRECT = 'https://finfo-api.vndirect.com.vn/v4/stock_prices/'
-        query = 'code:' + self.symbol + '~date:gte:' + start_date + '~date:lte:' + end_date
+        # query = 'code:' + self.symbol + '~date:gte:' + start_date + '~date:lte:' + end_date
+        query = 'code:' + self.symbol
         delta = datetime.datetime.strptime(end_date, '%Y-%m-%d') - datetime.datetime.strptime(start_date, '%Y-%m-%d')
         params = {
             "sort": "date",
             "size": delta.days + 1,
             "page": 1,
-            "q": query
+            "q": query,
+            "date:gte": start_date,
+            "date:lte" : end_date 
         }
-        res = requests.get(API_VNDIRECT, params=params)
-        data = res.json()['data']  
+
+        # print(params)
+        url = "https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size="+str(params.get("size"))+"&page=1&q="+str(params.get("q"))+"&date:gt="+str(params.get("date:gte"))+"&date:lte="+str(params.get("date:lte"))
+        
+        # print(url)
+        # res = requests.get(url="https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size=3994&page=1&q=code:AAM&date:gte=2010-10-10&date:lte=2021-09-15")
+        
+        res = requests.get(url=url)
+        
+        # self.driver.get(url=url)
+        # # # res = requests.get(url=API_VNDIRECT,params= params)
+        # ele =self.driver.find_element_by_css_selector("body > pre")
+
+        # # print(ele.text)
+
+        # res = json.loads(ele.text)
+
+        # self.driver.quit()
+
+        # print(res.text)
+        
+        data = res.json()["data"]  
         data = pd.DataFrame(data)
         stock_data = data[['date', 'adClose', 'close', 'pctChange', 'average', 'nmVolume',
                         'nmValue', 'ptVolume', 'ptValue', 'open', 'high', 'low']].copy()

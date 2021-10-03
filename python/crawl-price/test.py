@@ -25,9 +25,9 @@
 from vndirect import DataLoaderVnDirect
 
 loader = DataLoaderVnDirect(symbol="AAM", start="2010-10-10", end="2021-09-15")
-try:
-    data = loader.download()[::-1] # to revert 
-    data.to_csv("../../data/vndirect/csv-10-30/"+"AAM"+".csv",index=True,header=False)
-except:
-    print("err ")
+# try:
+data = loader.download()[::-1] # to revert 
+print(data)
+# except:
+#     print("err ")
 
