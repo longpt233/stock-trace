@@ -23,8 +23,23 @@
 
 
 from vndirect import DataLoaderVnDirect
+import datetime
 
-loader = DataLoaderVnDirect(symbol="AAM", start="2010-10-10", end="2021-09-15")
+
+yesterday = str(datetime.datetime.now() - datetime.timedelta(days=1)).split(" ")[0]
+
+dir_csv = "all"
+
+next_day_of_last_time = ''
+with open('../../data/vndirect/'+dir_csv+'/1-log-crawl.txt', 'rt') as f:
+    for line in f:
+        pass
+    last_time_crawl= str(line).split(" ")[0]
+    last_time_crawl = datetime.datetime.strptime(last_time_crawl+  ' 1:33PM', '%Y-%m-%d %I:%M%p')
+    next_day_of_last_time = str(last_time_crawl + datetime.timedelta(days=1)).split(" ")[0]
+    print(next_day_of_last_time)
+
+loader = DataLoaderVnDirect(symbol="AAM", start=next_day_of_last_time, end="2021-09-30")
 # try:
 data = loader.download()[::-1] # to revert 
 print(data)

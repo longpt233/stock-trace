@@ -13,7 +13,7 @@ class DataLoaderVnDirect():
         self.end = utils.convert_text_dateformat(end, new_type = '%d/%m/%Y') 
         option = webdriver.ChromeOptions()
         # option.add_argument('headless')
-        self.driver = webdriver.Chrome("../../chromedriver/chromedriver_linux",options= option)
+        self.driver = webdriver.Chrome("../../chromedriver/chromedriver.exe",options= option)
 
 
     def download(self):
@@ -25,7 +25,7 @@ class DataLoaderVnDirect():
         delta = datetime.datetime.strptime(end_date, '%Y-%m-%d') - datetime.datetime.strptime(start_date, '%Y-%m-%d')
         params = {
             "sort": "date",
-            "size": delta.days + 1,
+            "size": delta.days -3,
             "page": 1,
             "q": query,
             "date:gte": start_date,
@@ -33,26 +33,26 @@ class DataLoaderVnDirect():
         }
 
         # print(params)
-        url = "https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size="+str(params.get("size"))+"&page=1&q="+str(params.get("q"))+"&date:gt="+str(params.get("date:gte"))+"&date:lte="+str(params.get("date:lte"))
+        url = "https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size="+str(params.get("size"))+"&page=1&q="+str(params.get("q"))+"&date:gte:"+str(params.get("date:gte"))+"&date:lte="+str(params.get("date:lte"))
         
         # print(url)
         # res = requests.get(url="https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size=3994&page=1&q=code:AAM&date:gte=2010-10-10&date:lte=2021-09-15")
         
-        res = requests.get(url=url)
+        # res = requests.get(url=url)
         
-        # self.driver.get(url=url)
+        self.driver.get(url=url)
         # # # res = requests.get(url=API_VNDIRECT,params= params)
-        # ele =self.driver.find_element_by_css_selector("body > pre")
+        ele =self.driver.find_element_by_css_selector("body > pre")
 
-        # # print(ele.text)
+        # print(ele.text)
 
-        # res = json.loads(ele.text)
+        res = json.loads(ele.text)
 
-        # self.driver.quit()
+        self.driver.quit()
 
         # print(res.text)
         
-        data = res.json()["data"]  
+        data = res["data"]  
         data = pd.DataFrame(data)
         stock_data = data[['date', 'adClose', 'close', 'pctChange', 'average', 'nmVolume',
                         'nmValue', 'ptVolume', 'ptValue', 'open', 'high', 'low']].copy()
@@ -85,6 +85,7 @@ if __name__ == "__main__":
         last_time_crawl= str(line).split(" ")[0]
         last_time_crawl = datetime.datetime.strptime(last_time_crawl+  ' 1:33PM', '%Y-%m-%d %I:%M%p')
         next_day_of_last_time = str(last_time_crawl + datetime.timedelta(days=1)).split(" ")[0]
+        # print(next_day_of_last_time)
 
 
     it = 0
@@ -96,6 +97,7 @@ if __name__ == "__main__":
                 loader = DataLoaderVnDirect(symbol= row[0], start=next_day_of_last_time, end=yesterday)
                 try:
                     data = loader.download()
+                    print(data)
                     data.to_csv("../../data/vndirect/"+dir_csv+"/"+row[0]+".csv",index=True,mode= 'a',header=False)
                 except:
                     print("err at {}".format(row[0]))
