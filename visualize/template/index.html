@@ -1,0 +1,108 @@
+<html>
+<head>
+	<title>Stock</title>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+	<script>
+		function httpGet(url) {
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open("GET", url, false); // false for synchronous request
+			xmlHttp.send();
+			xmlHttp.onload = function print() {
+				console.log(xmlHttp.responseText)
+			}
+			return xmlHttp.responseText;
+		}
+
+		google.charts.load('current', { 'packages': ['corechart'] });
+		// google.charts.setOnLoadCallback(drawChart);
+
+		// Line chart
+		function drawLineChart() {
+			data_stock = httpGet('http://localhost:5000/data?code=SCG')
+			json_data = JSON.parse(data_stock)
+			data = json_data['data']
+			console.log(data[0]);
+			for (i=0; i < data.length; i++){
+				data[i].splice(0, 0 , i+2000) // thêm ngày
+				data[i][6]  = data[i][6] / 100000
+			}
+			data.splice(0, 0, ['Day', 'adjust', 'close', 'open', 'high', 'low', 'volume'])
+			console.log(data);
+
+			var data_table = google.visualization.arrayToDataTable(data);
+			var options = {
+				title: 'Company Performance',
+				curveType: 'function',
+				legend: { position: 'bottom' }
+			};
+			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+			chart.draw(data_table, options);
+		}
+
+		// Candlistick Chart
+		function drawCandlistickChart() {
+			data_stock = httpGet('http://localhost:5000/data?code=SCG')
+			json_data = JSON.parse(data_stock)
+			data = json_data['data']
+			console.log(data[0]);
+			for (i=0; i < data.length; i++){
+				data[i].splice(0, 0 , i+2000); // thêm ngày
+				data[i].splice(1, 1);
+				data[i].splice(5, 1);
+				// data[i].splice(1, 0, data[i].pop());
+			}
+			data.splice(0, 0, ['Day', 'low', 'close', 'open', 'high'])
+			console.log(data);
+
+			var data_table = google.visualization.arrayToDataTable(data);
+			var options = {
+				title: 'Stock Price',
+				curveType: 'function',
+				// legend: { position: 'bottom' }
+			};
+			var chart = new google.visualization.CandlestickChart(document.getElementById('chart_div'));
+			chart.draw(data_table, options);
+		}
+
+		// Predict
+		function drawChartwithPredict() {
+			data_stock = httpGet('http://localhost:5000/data?code=SCG')
+			json_data = JSON.parse(data_stock)
+			data_stock = json_data['data']
+
+			predicted = httpGet('http://localhost:5000/model/predict?code=SCG')
+			json_predict = JSON.parse(predicted)
+			data_predict = json_predict['predicted']
+
+			var count = 0;
+			len_data_stock = data_stock.length
+			len_data_predict = data_predict.length
+			var data = []
+			for (i=0; i < data_predict.length ; i++){
+				data.push([i, data_stock[len_data_stock-len_data_predict-1+i][2], data_predict[i]])
+			}
+			data.splice(0, 0, ['Day', 'close', 'predict'])
+			console.log(data);
+
+			var data_table = google.visualization.arrayToDataTable(data);
+			var options = {
+				title: 'Predict Stock',
+				curveType: 'function',
+				legend: { position: 'bottom' }
+			};
+			var chart = new google.visualization.LineChart(document.getElementById('predict_chart'));
+			chart.draw(data_table, options);
+		}
+	</script>
+	<div id="curve_chart" style="width: 600px; height: 300px"></div>
+	<div id="chart_div" style="width: 600px; height: 300px;"></div>
+	<div id="predict_chart" style="width: 500px; height: 300px;"></div>
+	<button onclick="drawLineChart()">Line Chart</button>
+	<button onclick="drawCandlistickChart()">Candlistick Chart</button>
+	<button onclick="drawChartwithPredict()">Predict Chart</button>
+</body>
+
+</html>
