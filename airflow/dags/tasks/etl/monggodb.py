@@ -4,21 +4,44 @@ MONGO_URL = "mongodb+srv://longpt:longpt@cluster-longpt.ocem8.mongodb.net/test?a
 myclient = MongoClient(MONGO_URL)
 db = myclient["stock"]
 
-# all stock_name_v1
-def getAllCompany():
+
+def get_all_company_v1():
+
     collection = db['stock_name_v1']
-    cursor = collection.find({})
-    res = []
+    all_document = collection.find({})     # get all document 
+
+    list_name_price = []
     
-    for document in cursor:  # document is a dict
-        res.append({
-            "name" : document.get("name"),
-            "price":document.get("price")})
+    for dict_document in all_document:           # document is a dict
+        list_name_price.append({        
+            "name" : dict_document.get("name"),
+            "price": dict_document.get("price")
+        })
  
-    return res
+    return list_name_price
 
 
-def pushAllCompany(listCompany):
+def get_all_company_v2():
+
+    collection = db['stock_name_v2']
+    all_document = collection.find({})     # get all document 
+
+    list_name_price = []
+    
+    for dict_document in all_document:           # document is a dict
+        list_name_price.append({        
+            "name" : dict_document.get("name"),
+            "price": dict_document.get("price")
+        })
+ 
+    return list_name_price
+
+def push_all_company_v1(list_company_price):
+    pass
+
+def push_all_company_v2(list_company_price):
+
+    
     pass
 
 # minimize stock_name_v2
