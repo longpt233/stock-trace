@@ -1,6 +1,5 @@
 import airflow.utils.dates
-from airflow import DAG
-from airflow.operators.dummy import DummyOperator
+from airflow import DAG 
 from datetime import datetime, timedelta
 from airflow.operators.python_operator import PythonOperator
 
@@ -18,8 +17,8 @@ default_args = {
 }
 
 dag = DAG(
-    dag_id="example_dag_name",
-    description="hello   airflow",
+    dag_id="daily_crawl_and_etl",
+    description="crawl data in stock_name_v2",
     schedule_interval='30 20 * * *',
     start_date=airflow.utils.dates.days_ago(5),
     default_args=default_args,
@@ -27,7 +26,7 @@ dag = DAG(
 )
 
 
-import tasks.hello_task as task
+import tasks.crawl_data as crawl
 
 ticker_crawler = PythonOperator(
     task_id="ticker_crawler",
