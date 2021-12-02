@@ -49,11 +49,12 @@ def crawl_cate_stock():
 def crawl_stock_price_v1():
 
     yesterday = str(datetime.datetime.now() - datetime.timedelta(days=1)).split(" ")[0]
-    dir_csv_output = "stock_price_v1"
+    dir_csv_output = "stock_price_v1/data"
+    dir_log_crawl = './stock_price_v1/log_crawl.txt'
 
     # get day from last time crawl 
     next_day_of_last_time = ''
-    with open('./'+dir_csv_output+'/1-log-crawl.txt', 'rt') as f:
+    with open(dir_log_crawl, 'rt') as f:
         for line in f:
             pass
         last_time_crawl= str(line).split(" ")[0]
@@ -76,12 +77,12 @@ def crawl_stock_price_v1():
         try:
             data = loader.download()
             data.to_csv("./"+dir_csv_output+"/"+row+".csv",index=True,mode= 'a',header=False)
-            time.sleep(20)
+            time.sleep(1)
         except:
             company_err_list.append(row)
 
-    with open('./'+dir_csv_output+'/1-log-crawl.txt', 'a') as f:
-        f.write('\n{} : crawl from {}, crawl {} company, err list {} '.format(yesterday,next_day_of_last_time,it, company_err_list))
+    with open(dir_log_crawl, 'a') as f:
+        f.write('\n{} : crawl from {}, crawl {} company, err len {} err list {} '.format(yesterday,next_day_of_last_time,it,len(company_err_list), company_err_list))
     pass 
 
 if __name__ == "__main__":
