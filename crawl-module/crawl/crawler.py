@@ -77,7 +77,7 @@ def crawl_stock_price_v1():
         try:
             data = loader.download()
             data.to_csv("./"+dir_csv_output+"/"+row+".csv",index=True,mode= 'a',header=False)
-            time.sleep(1)
+            time.sleep(10)
         except:
             company_err_list.append(row)
 
