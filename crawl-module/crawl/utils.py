@@ -55,7 +55,7 @@ class DataLoaderVnDirect():
         self.end = convert_text_dateformat(end, new_type = '%d/%m/%Y') 
         option = webdriver.ChromeOptions() 
         # option.add_argument("--window-size=5,5")
-        self.driver = webdriver.Chrome("../chromedriver/chromedriver.exe",options= option)
+        self.driver = webdriver.Chrome("../chromedriver/chromedriver",options= option)
 
     def download(self):
         start_date = convert_text_dateformat(self.start, origin_type = '%d/%m/%Y', new_type = '%Y-%m-%d')

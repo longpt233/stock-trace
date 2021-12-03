@@ -11,7 +11,7 @@ def get_com_name_v2():
     list_name = []
     for dict_document in all_document:           # document is a dict
         list_name.append(dict_document.get("data"))
-    return list_name
+    return list_name[0]   # cai list nay chi co mot phan tu
 
 def push_com_name_v2(name, data):
     stock_name_json = {
@@ -25,9 +25,22 @@ def get_com_price_v2(stock_name):
     document_dict = collection.find_one({"name":stock_name})  
     return document_dict
 
-def push_com_price_v2(stock_name,data_append):
+def push_com_price_v2(stock_name,data_append_list):
     collection = db['com_price_v2']
-    collection.update_one({'name': stock_name}, {'$push': {'data': data_append}})
+    for data_append in data_append_list:
+        collection.update_one({'name': stock_name}, {'$push': {'data': data_append}})
+
+def push_com_price_v2_first_time(stock_name,data_first):
+    collection = db['com_price_v2']
+    stock_price_json = {
+        "name" : stock_name, 
+        "data" : data_first   # list
+    }
+    collection.insert_one(stock_price_json)
+
+def check_collection_empty():
+    collection = db['com_price_v2']
+    return collection.count() == 0
 
 
 if __name__ == "__main__":

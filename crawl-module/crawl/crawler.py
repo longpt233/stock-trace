@@ -9,7 +9,7 @@ import time
 import utils
 
 def crawl_cate_all():
-    browser = webdriver.Chrome(executable_path="../chromedriver/chromedriver.exe")
+    browser = webdriver.Chrome(executable_path="../chromedriver/chromedriver")
     browser.get("https://www.cophieu68.vn/categorylist.php#")
     cate = browser.find_elements_by_xpath("/html/body/div[7]/table/tbody/tr/td/table[2]/tbody/tr")
     data = []    
@@ -31,7 +31,7 @@ def crawl_cate_stock():
     cate =[]
     f = open('cate-all.json')
     data = json.load(f)   # returns JSON object as a dictionary
-    browser = webdriver.Chrome(executable_path="../chromedriver/chromedriver.exe")
+    browser = webdriver.Chrome(executable_path="../chromedriver/chromedriver")
     cate_stock_dict ={}
     for cate in data["data"]:   
         browser.get("https://www.cophieu68.vn/categorylist_detail.php?category=^"+ cate)     # nhớ là có cái ^ ở đây 

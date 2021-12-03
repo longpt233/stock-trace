@@ -26,11 +26,11 @@ dag = DAG(
 )
 
 
-import tasks.crawl_utils.crawler as crawl
+import tasks.crawler as crawl
 
 ticker_crawler_all = PythonOperator(
     task_id="ticker_crawler_stock_name_v2",
-    python_callable=crawl.crawl(),
+    python_callable=crawl.crawl_all(),
     dag=dag)
 
 ticker_crawler_all
