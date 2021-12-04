@@ -2,32 +2,25 @@
 craw, analyze, predict  
 ## Structure Data 
 
+- data nằm ở folder crawl-module/crawl
+
 ```
-data     
-|--company        
-|   |-- company-list.csv : crawl all company + company here [link](https://vn.tradingview.com/markets/stocks-vietnam/sectorandindustry-sector/)+category   
-|   |-- category : vietsub category, **category v1**   : [link](https://vn.tradingview.com/markets/stocks-vietnam/sectorandindustry-sector/)       
+crawl     
+|--stock_price_v1        
+|   |-- data : file .csv  nằm ở đây   
 |       
-|--vndirect       
-|   |-- all : DATA main      [link]("https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size=3994&page=1&q=code:AAM&date:gte=2010-10-10date:lte=2021-09-15")      
-|   |-- csv-10-30 : data company price about 10~30       
+|--cate-all.json :  tất cả các nhóm ngành        
 |       
-|--crawl-category : new **category v2**     
+|--cate-company.json :   tất cả các công ty theo nhóm ngành
 
 ```
 
 ## Read data
 
-- all code in ```python/analyze/**<your_folder>**```
-- all data in ```/data/vndirect/all/```
->  example read : in ```python/analyze/long/test-read.py``` 
-
 ``` python 
 import pandas as pd
-
-data= pd.read_csv("../../../data/vndirect/all/ACB.csv")
+data= pd.read_csv("...ACB.csv")
 data.columns= ['date', 'adjust', 'close', 'change_perc', 'avg', 'volume_match', 'value_match', 'volume_reconcile', 'value_reconcile', 'open', 'high', 'low', 'volume']
-
 print(data.head(5))
 
          date  adjust  close  change_perc   avg  volume_match   value_match  volume_reconcile  value_reconcile  open  high   low     volume
@@ -37,6 +30,6 @@ print(data.head(5))
 3  2013-01-08   5.168   17.3       1.1696  17.1     2180000.0  3.749339e+10             418.0     6.688000e+06  17.1  17.5  16.9  2180418.0
 4  2013-01-09   5.409   18.1       5.8480  18.1     3861400.0  6.945910e+10          100302.0     1.724832e+09  17.1  18.2  17.1  3961702.0
 
-> volume = volume_match + volume_reconcile
+> cột volume = volume_match + volume_reconcile 
 ```
 
