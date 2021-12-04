@@ -15,6 +15,7 @@ def push_com_name_v1():
     company_list =[]
     for key, value in data.items():
         company_list.extend(value)
+    company_list = list(set(company_list))
 
     stock_name_json = {
         "name" :"list company", 
