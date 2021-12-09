@@ -9,7 +9,9 @@ import time
 import utils
 
 def crawl_cate_all():
-    browser = webdriver.Chrome(executable_path="../chromedriver/chromedriver")
+    save_json = "cate-all.json"
+
+    browser = webdriver.Chrome(executable_path="/home/long/Documents/20211/stock-trace/crawl-module/chromedriver/chromedriver")
     browser.get("https://www.cophieu68.vn/categorylist.php#")
     cate = browser.find_elements_by_xpath("/html/body/div[7]/table/tbody/tr/td/table[2]/tbody/tr")
     data = []    
@@ -22,9 +24,9 @@ def crawl_cate_all():
         data.append(e)
     dict_cate = {}
     dict_cate["data"] = data
-    with open('cate-all.json', 'w') as f:
+    with open(save_json, 'w') as f:
         json.dump(dict_cate, f)
-    print(dict_cate)
+    print("write to {} ={}".format(save_json,dict_cate))
     browser.close()
 
 def crawl_cate_stock():
@@ -87,6 +89,6 @@ def crawl_stock_price_v1():
 
 if __name__ == "__main__":
 
-    crawl_stock_price_v1()
-    # crawl_cate_all()
-    #crawl_cate_stock()
+    # crawl_stock_price_v1()
+    crawl_cate_all()
+    # crawl_cate_stock()

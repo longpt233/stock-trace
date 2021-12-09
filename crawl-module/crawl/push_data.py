@@ -9,6 +9,8 @@ MONGO_URL = "mongodb+srv://longpt:longpt@cluster-longpt.ocem8.mongodb.net/test?a
 myclient = MongoClient(MONGO_URL)
 db = myclient["stock_db"]
 
+# myclient.close()
+
 def push_com_name_v1():
     f = open('./cate-company.json')
     data = json.load(f) 
