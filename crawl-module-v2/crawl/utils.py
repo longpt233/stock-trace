@@ -51,8 +51,8 @@ def _isOHLCV(data):
 class  DataLoaderVnDirect():
     def __init__(self, symbol, start, end, *arg, **karg):
         self.symbol = symbol
-        self.start = convert_text_dateformat(start, new_type = '%d/%m/%Y')
-        self.end = convert_text_dateformat(end, new_type = '%d/%m/%Y') 
+        self.start = start
+        self.end = end
         option = webdriver.ChromeOptions() 
         # option.add_argument("--window-size=5,5")
         self.driver = webdriver.Chrome("../chromedriver/chromedriver",options= option)
@@ -74,12 +74,8 @@ class  DataLoaderVnDirect():
         url = "https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size="+str(params.get("size"))+"&page=1&q="+str(params.get("q"))+"&date:gte:"+str(params.get("date:gte"))+"&date:lte="+str(params.get("date:lte"))
         print(url)
         self.driver.get(url=url) 
-        ele =self.driver.find_element_by_css_selector("body > pre")       
-        # print(delta.days) 
-        json_raw =  ele.text
-        # print(json_raw)
-        # json_raw = json_raw[1:]
-        # json_raw= json_raw[:-1]
+        ele =self.driver.find_element_by_css_selector("body > pre")        
+        json_raw =  ele.text 
 
         res = json.loads(json_raw)
 
