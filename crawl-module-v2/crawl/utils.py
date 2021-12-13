@@ -1,77 +1,49 @@
-from datetime import datetime
+import datetime 
 import re
 from selenium import webdriver
 import json
 import pandas as pd 
+import calendar
 
-def clean_text(text):
-    return re.sub('[(\n\t)*]', '', text).strip()
 
 def convert_date(text, date_type = '%Y-%m-%d'):
-    return datetime.strptime(text, date_type)
+    return datetime.datetime.strptime(text, date_type)
 
 def convert_text_dateformat(text, origin_type = '%Y-%m-%d', new_type = '%Y-%m-%d'):
     return convert_date(text, origin_type).strftime(new_type)
 
-def split_change_col(text):
-    return re.sub(r'[\(|\)%]', '', text).strip().split()
 
-def extract_number(text):
-    return int(re.search(r'\d+', text).group(0))
-
-
-def _isOHLC(data):
-    try:
-        cols = dict(data.columns)
-    except:
-        cols = list(data.columns)
-
-    defau_cols = ['high', 'low', 'close', 'open']
-
-    if all(col in cols for col in defau_cols):
-        return True
-    else:
-        return False
-
-
-def _isOHLCV(data):
-    try:
-        cols = dict(data.columns)
-    except:
-        cols = list(data.columns)
-
-    defau_cols = ['high', 'low', 'close', 'open', 'volume']
-
-    if all(col in cols for col in defau_cols):
-        return True
-    else:
-        return False
-
+def normal_day_count(start, end):
+    '''
+    tính từ  (start, end ]
+    neu start = end thi tra ve 0 
+    '''
+    start_date  = datetime.datetime.strptime(start, '%d/%m/%Y')
+    end_date    = datetime.datetime.strptime(end, '%d/%m/%Y')
+    num = 0 
+    for i in range((end_date - start_date).days):
+        day       = calendar.day_name[(start_date + datetime.timedelta(days=i+1)).weekday()]
+        if day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']:
+            num= num +1 
+    return num
 
 class  DataLoaderVnDirect():
-    def __init__(self, symbol, start, end, *arg, **karg):
+    
+    def __init__(self, symbol, start, end):
+        '''
+        %d/%m/%Y format input
+        '''
         self.symbol = symbol
         self.start = start
         self.end = end
-        option = webdriver.ChromeOptions() 
-        # option.add_argument("--window-size=5,5")
-        self.driver = webdriver.Chrome("../chromedriver/chromedriver",options= option)
+        option = webdriver.ChromeOptions()  
+        self.driver = webdriver.Chrome("../chromedriver/chromedriver.exe",options= option)
 
     def download(self):
-        start_date = convert_text_dateformat(self.start, origin_type = '%d/%m/%Y', new_type = '%Y-%m-%d')
-        end_date = convert_text_dateformat(self.end, origin_type = '%d/%m/%Y', new_type = '%Y-%m-%d') 
-        query = 'code:' + self.symbol
-        delta = datetime.strptime(end_date, '%Y-%m-%d') - datetime.strptime(start_date, '%Y-%m-%d')
-        params = {
-            "sort": "date",
-            "size": delta.days -3,
-            "page": 1,
-            "q": query,
-            "date:gte": start_date,
-            "date:lte" : end_date 
-        }
+        
+        numday_need_crawl = normal_day_count(self.start, self.end)
  
-        url = "https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size="+str(params.get("size"))+"&page=1&q="+str(params.get("q"))+"&date:gte:"+str(params.get("date:gte"))+"&date:lte="+str(params.get("date:lte"))
+        url = "https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&size="+str(numday_need_crawl)+"&page=1&q=code:" + str(self.symbol) 
         print(url)
         self.driver.get(url=url) 
         ele =self.driver.find_element_by_css_selector("body > pre")        

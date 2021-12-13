@@ -2,3 +2,4 @@
 /src/test/
 /target/
 __pycache__
+*.log
