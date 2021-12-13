@@ -1,2 +1,0 @@
-2017-01-01
-2021-12-02 : crawl from 2017-01-02, crawl 870 company, err len 0 err list [] 
