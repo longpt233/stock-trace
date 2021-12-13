@@ -5,8 +5,7 @@ import time
 import logging
 
 import utils
-import monggodb
-import traceback
+import monggodb 
 
 logging.basicConfig(filename="./crawl.log",
                             filemode='a',
@@ -34,7 +33,7 @@ def crawl_all():
     for name in list_name: 
         if monggodb.check_exist_stock(name) == False:     # nếu không tồn tại cổ phiếu đó        
             try:
-                last_time_crawl = "4/12/2021"   
+                last_time_crawl = "01/01/2015"   
                
                 data_frame = crawl_one(name,last_time_crawl,today)
 
@@ -65,7 +64,7 @@ def crawl_all():
                     data_list.append(my_list)   
                 
                 # push 
-                monggodb.push_com_price_v1(name,data_list)  # bo di ngay cu
+                monggodb.push_com_price_v1(name,data_list)  
                 logger.info("new time crawl {}, numday = {}, from day {}, to day {}".format(name,len(data_list),last_time_crawl, today))
 
             except Exception as e :  
