@@ -4,4 +4,4 @@
 __pycache__
 *.log
 *.pkl
-./crawl-module-v2/crawl/config.py
+*config.py

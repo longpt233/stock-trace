@@ -1,2 +1,0 @@
-USER = 'longpt'
-PASS = ""
