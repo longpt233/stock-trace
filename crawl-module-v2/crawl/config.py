@@ -1,0 +1,2 @@
+USER = 'longpt'
+PASS = ""
