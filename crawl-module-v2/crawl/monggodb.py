@@ -1,13 +1,15 @@
 from pymongo import MongoClient
 import csv
+import config
 
-MONGO_URL = "mongodb+srv://longpt:longpt@cluster-longpt.ocem8.mongodb.net/test?authSource=admin&replicaSet=atlas-qdmyf4-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true";
+MONGO_URL = "mongodb+srv://"+config.USER+":"+config.PASS+"@cluster-longpt.ocem8.mongodb.net/test?authSource=admin&replicaSet=atlas-qdmyf4-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true";
 
 def get_list_com_name_v1():
+    print(MONGO_URL)
     myclient = MongoClient(MONGO_URL)
     db = myclient["stock_db"]
     collection = db['stock_infor']
-    document_dict = collection.find_one({"name":"list all company"})  
+    document_dict = collection.find_one({"name":"name_1"})  
     # print(type(document_dict["data"]))  # return list 
 
     myclient.close()
@@ -32,6 +34,7 @@ def push_com_price_v1(stock_name,data_append_list):
 
     # push 
     for data_append in data_append_list:
+        print("append to stock",stock_name," value= ", data_append)
         collection.update_one({'name': stock_name}, {'$push': {'data': data_append}})
 
     # close 
