@@ -3,3 +3,5 @@
 /target/
 __pycache__
 *.log
+*.pkl
+config.py

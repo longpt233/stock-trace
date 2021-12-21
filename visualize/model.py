@@ -12,6 +12,11 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense
 from keras.layers import LSTM
 
+# 1-30 -> 31 (31-40)
+# số ngày đúng hướng
+# 1-30 -> 33 . 33 <- 32 dự đoán 31 dự đoán , 30,thật
+# số ngày 33-30
+
 
 ## cai tien voi loss function moi
 # def loss_func(y_true, y_pred):
@@ -22,7 +27,7 @@ from keras.layers import LSTM
 #         return mean * 1.2
 
 # Chỉ dùng thuộc tính close để train => input shape=30, 1
-def train(name, data):
+def train(name, data):  #[[open,h,c,l],[o,h,l,c],.....]   1->100 : 70 [ 30[o,l,]-> 31]  ACB : ngân hàng -> 10 mã cũng cùng nhóm ngân hàng [o,h,c,l,m1,m2,m3...m10]   m1 = o-c/ocủa mã M1
     # chuẩn hóa
     print(data.shape)
     scaler = StandardScaler()
@@ -53,7 +58,7 @@ def train(name, data):
 # print('time:', time.time() - start)
 
 
-def test(name, data):
+def test(name, data):   # []
     model = load_model(name+'.h5')
 
     scaler = StandardScaler()
