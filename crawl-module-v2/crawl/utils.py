@@ -37,7 +37,7 @@ class  DataLoaderVnDirect():
         self.start = start
         self.end = end
         option = webdriver.ChromeOptions()  
-        self.driver = webdriver.Chrome("../chromedriver/chromedriver.exe",options= option)
+        self.driver = webdriver.Chrome("../chromedriver/chromedriver",options= option)
 
     def download(self):
         

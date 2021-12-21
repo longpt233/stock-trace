@@ -21,11 +21,11 @@ def crawl_one(company,start_day,end_day):
 
     loader = utils.DataLoaderVnDirect(symbol= company, start=start_day, end=end_day)
     data_frame = loader.download()
-    time.sleep(1)
+    time.sleep(20)
     return data_frame    
 
 def crawl_all():
-    list_name = monggodb.get_list_com_name_v1()[0:2]
+    list_name = monggodb.get_list_com_name_v1()
     today = datetime.datetime.today().strftime('%d/%m/%Y')  
     logger.info("start crawl {} company".format(len(list_name)))
     err_list =[]
