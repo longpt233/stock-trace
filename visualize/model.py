@@ -1,8 +1,6 @@
-import csv
 import time
 import numpy as np
 # import pandas as pd
-
 import matplotlib.pyplot as plt
 # from sklearn.linear_model import LinearRegression
 # from sklearn.model_selection import train_test_split
@@ -11,11 +9,6 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from keras.models import Sequential, load_model
 from keras.layers import Dense
 from keras.layers import LSTM
-
-# 1-30 -> 31 (31-40)
-# số ngày đúng hướng
-# 1-30 -> 33 . 33 <- 32 dự đoán 31 dự đoán , 30,thật
-# số ngày 33-30
 
 
 ## cai tien voi loss function moi
@@ -26,8 +19,9 @@ from keras.layers import LSTM
 #     if sign < 0:
 #         return mean * 1.2
 
+
 # Chỉ dùng thuộc tính close để train => input shape=30, 1
-def train(name, data):  #[[open,h,c,l],[o,h,l,c],.....]   1->100 : 70 [ 30[o,l,]-> 31]  ACB : ngân hàng -> 10 mã cũng cùng nhóm ngân hàng [o,h,c,l,m1,m2,m3...m10]   m1 = o-c/ocủa mã M1
+def train(name, data):
     # chuẩn hóa
     print(data.shape)
     scaler = StandardScaler()
@@ -53,12 +47,25 @@ def train(name, data):  #[[open,h,c,l],[o,h,l,c],.....]   1->100 : 70 [ 30[o,l,]
     print('Saved ' + name)
 
 
-# start = time.time()
-# training()
-# print('time:', time.time() - start)
 
 
-def test(name, data):   # []
+def predict(name, data):
+    model = load_model(name+'.h5')
+    
+    scaler = StandardScaler()
+    scaled = scaler.fit_transform(data[:, 2:3])  # chỉ lấy thuộc tính close
+
+    inputs = np.array([scaled[-30:]])
+    inputs = np.reshape(inputs, (inputs.shape[0], 30, 1))
+    
+    predicted_stock_price = model.predict(inputs)  # predict
+    predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
+    
+    return {'predicted' : str(predicted_stock_price[0][0])}
+    
+
+
+def test_model(name, data):
     model = load_model(name+'.h5')
 
     scaler = StandardScaler()

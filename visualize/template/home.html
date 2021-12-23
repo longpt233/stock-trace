@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>Stock</title>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <script>
+        function httpGet(url) {
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open("GET", url, false); // false for synchronous request
+			xmlHttp.send();
+			xmlHttp.onload = function print() {
+				console.log(xmlHttp.responseText)
+			}
+			return xmlHttp.responseText;
+		}
+
+        function show_detail(){
+            var code = document.getElementById('stock').value
+            window.location = "http://localhost:5000/show?code="+code
+        }
+		
+        // response = httpGet('http://localhost:5000/get-list-my-stock')
+        // json_stock = JSON.parse(response)
+        // list_stock = json_stock['list_stock']
+        // console.log(document.getElementById('list_code_stock').innerHTML);
+        // document.getElementById('list_code_stock').innerHTML = 'truong';
+    </script>
+    <div id="list_code_stock">{{stock_list}}</div>
+    <input type="text" id="stock" name="stock">
+    <button onclick="show_detail()"> Show detail stock</button>
+</body>
