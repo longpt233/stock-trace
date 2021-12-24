@@ -1,92 +1,73 @@
 # lam the nao lam co ham sau la dc 
-
-import investpy
+ 
 import monggodb
 import datetime
-import time
-import traceback
+import time 
+import utils
 
-# format dd/mm/yyyy
-def crawl_one(company,start_day,end_day):
-    try:
-        data = investpy.get_stock_historical_data(stock=company, country='VietNam', from_date=start_day, to_date=end_day)  # startday < enday, return >= 2 day  
-        return data
-    except:
-        # print("ERR CRAWL AT {}".format(company))
-        return None
+# format dd/mm/yyyy tra ve [] vi du 01/12  -> tra tu 01/12
+def crawl_one(company,start_day,end_day,dict_name_exchange):
+
+    exchange = dict_name_exchange[company]
+
+    loader = utils.DataLoaderCAFE(symbol= company, start=start_day, end=end_day, exchange=exchange) 
+    data_frame = loader.download()
+    time.sleep(2) 
+    return data_frame  
 
 def crawl_all():
 
-    print("crawl all starting")
+    print("crawl all starting") 
 
-
-    list_name = monggodb.get_com_name_v2()
+    dict_name_exchange = monggodb.get_name_exchange()
 
     err_list = []
     
-    if monggodb.check_collection_empty(): 
-        print("FIRST TIME CRAWL")
-        
-        for name in list_name: 
+    list_name = monggodb.get_list_com_name_v1()
+    today = datetime.datetime.today().strftime('%d/%m/%Y')    
+    err_list =[]
+
+    for name in list_name[:2]: 
+        if monggodb.check_exist_stock(name) == False:     # nếu không tồn tại cổ phiếu đó        
             try:
-                # print("crawl stock :",name)
-                time.sleep(10)
+                last_time_crawl = "01/01/2015"   
+               
+                data_frame = crawl_one(name,last_time_crawl,today,dict_name_exchange)
 
-                last_time_crawl = "01/01/2015"    # 
-                today = datetime.datetime.today().strftime('%d/%m/%Y')   # chi crawl sau 6h toi 
-                # today = "02/12/2021" # for test
-                data_frame = crawl_one(name,last_time_crawl,today)
-
-                # convert to list
                 data_list =[] 
                 for index, rows in data_frame.iterrows(): 
-                    my_list =[index, rows.Open, rows.High, rows.Low, rows.Close, rows.Volume] 
+                    my_list =[rows.date, rows.open, rows.high, rows.low, rows.close, rows.volume] 
                     data_list.append(my_list)   
 
-                # push
-                monggodb.push_com_price_v2_first_time(name,data_list)  # [[Timestamp('2021-12-01 00:00:00'), 36100.0, 36100.0]]
+                monggodb.push_com_price_v1_first_time(name,data_list[::-1]) # cai list nay bi nguoc vcl 
+                print("first time crawl {}, numday = {}, from day {}, to day {}".format(name,len(data_list),last_time_crawl, today))
         
-            except:
-                # print("CATCH ERR AT " + name )
+            except Exception as e : 
                 err_list.append(name)
-                # print(traceback.format_exc())
-    else:     
-        print("NEW TIME CRAWL")
-        
-        for name in list_name[0:2]: 
-            try:
-                # print("crawl stock :",name)
-                time.sleep(10)
-
+        else:                   
+            try: 
                 # get last 
-                stock_price_history = monggodb.get_com_price_v2(name)
-                last_time_crawl = stock_price_history["data"][-1][0]            # datetime.datetime 
-                # last_time_crawl = last_time_crawl + datetime.timedelta(days=1)  # crawl tu ngay tiep theo  . 
-                # update : investpy phai crawl toi thieu 2 ngay => ti cai list bo di ngay nay cx dc 
-                last_time_crawl = last_time_crawl.strftime('%d/%m/%Y')          # chuan hao ve dung dinh dang
+                stock_price_history = monggodb.get_com_price_v1(name) 
+                last_time_crawl = stock_price_history["data"][-1][0]        
+                          
+                data_frame = crawl_one(name,last_time_crawl,today,dict_name_exchange)
                 
-                # crawl tu last toi ngay hom nay
-                today = datetime.datetime.today().strftime('%d/%m/%Y')            
-                data_frame = crawl_one(name,last_time_crawl,today)
-                
-                # append , convert to list
                 data_list =[] 
                 for index, rows in data_frame.iterrows(): 
                     
-                    my_list =[index, rows.Open, rows.High, rows.Low, rows.Close, rows.Volume] 
+                    my_list =[rows.date, rows.open, rows.high, rows.low, rows.close, rows.volume] 
                     data_list.append(my_list)   
                 
                 # push 
-                monggodb.push_com_price_v2(name,data_list[1:])  # bo di ngay cu
-
-            except:
-                # print("CATCH ERR AT " + name )
-                # print(traceback.format_exc())
-                err_list.append(name)
-
-    print(err_list)
+                monggodb.push_com_price_v1(name,data_list[::-1][1:])  # lay 1 vi ham crwa crawl thua cai dau 
+                
+            except Exception as e :  
+                err_list.append(name)  
+    
+    print("total err = {}, list ={}".format(len(err_list), err_list))
    
     
     
 if __name__ == "__main__":
-    crawl_all() 
+
+    crawl_all()

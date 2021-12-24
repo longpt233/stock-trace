@@ -6,3 +6,4 @@ requests
 pymongo
 pymongo[srv]  
 investpy
+bs4

@@ -16,7 +16,7 @@ logging.basicConfig(filename="./crawl.log",
 logger = logging.getLogger('crawl logger')
 
 
-# format dd/mm/yyyy
+# format dd/mm/yyyy / tra ve (] vi du 01/12  -> tra tu 02/12
 def crawl_one(company,start_day,end_day):
 
     loader = utils.DataLoaderVnDirect(symbol= company, start=start_day, end=end_day)
@@ -73,5 +73,8 @@ def crawl_all():
     
     logger.info("total err = {}, list ={}".format(len(err_list), err_list))
     
-if __name__ == "__main__":
-    crawl_all()
+if __name__ == "__main__": 
+    
+    data_frame = crawl_one("ACB","01/12/2021","24/12/2021")
+
+    print(data_frame)

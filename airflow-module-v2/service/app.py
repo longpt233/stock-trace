@@ -6,12 +6,8 @@ app = Flask(__name__)
 @app.route("/crawl-all")
 def events():
     print("service api receive airflow message !!!")
-
-    try:
-        crawler.crawl_all()
-    except:
-        print("crawl errr")
-
+    crawler.crawl_all()   
+    print("crawl errr")
     return jsonify("done task")
 
 if __name__ == "__main__":

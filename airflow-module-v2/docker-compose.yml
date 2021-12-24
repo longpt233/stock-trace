@@ -26,7 +26,7 @@ services:
       - postgres
     environment: *airflow_environment
     entrypoint: /bin/bash
-    command: -c 'airflow db upgrade && sleep 5 && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email phanthanhlong233@gmail.com'
+    # command: -c 'airflow db upgrade && sleep 5 && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email phanthanhlong233@gmail.com'
   webserver:
     image: *airflow_image
     restart: always
@@ -50,10 +50,10 @@ services:
     command: scheduler
 
   service-api:
+    image: service-api-airflow
     build: 
       context: ./service
-    container_name: service-api-name
-    image: service-api-airflow
+    container_name: service-api-name    
     ports:
       - "5001:5001"
 

@@ -135,25 +135,3 @@ class DataLoaderCAFE():
 
         return stock_slice_batch
 
-if __name__ == "__main__":
-    # crawl_by_thangnch("ACB")
-
-    # ACB HOSE 
-#           date adjust  close      change_perc  avg volume_match   value_match volume_reconcile value_reconcile   open   high    low
-# 19  01/12/2021  33.50  33.50    0.20 (0.60 %)  NaN      3620400  120583000000           200000      6220000000  33.10  33.50  33.05
-
-    # AAV HNX 
-#           date adjust  close      change_perc  avg volume_match  value_match volume_reconcile value_reconcile   open   high    low
-# 19  01/12/2021  26.90  26.90    0.20 (0.75 %)  NaN       652336  17466170200                0               0  26.70   26.7  27.40 
-
-#     01/12/2021	26.90 	26.90 	0.20 (0.75 %)	   	652,336 	17,466,170,200 	0 	0 	                      26.70 	26.7 	27.40 	26.50 
-    #
-
-
-    loader = DataLoaderCAFE(symbol= "AAV", start="01/12/2021", end="24/12/2021")
-    # try:
-    data = loader.download()
-    data = data[::-1]  # start:stop:step. o day -1 tuc la in nguoc 
-    print(data)
-    # except:
-    #     print("err ")
