@@ -4,6 +4,7 @@ from selenium import webdriver
 import json
 import pandas as pd 
 import calendar
+import requests
 
 
 def convert_date(text, date_type = '%Y-%m-%d'):
@@ -69,3 +70,15 @@ class  DataLoaderVnDirect():
         stock_data['volume'] = stock_data.volume_match + stock_data.volume_reconcile
 
         return stock_data
+
+def crawl_by_thangnch(stock_code, from_date, to_date):
+
+    url = "https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:{}~date:gte:{}~date:lte:{}&size=9990&page=1".format(stock_code, from_date, to_date)
+    print(url)
+    x = requests.get(url, timeout=10)
+    json_x = x.json()['data']
+    print(json_x)
+
+
+if __name__ == "__main__":
+    crawl_all()
