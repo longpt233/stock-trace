@@ -82,6 +82,8 @@ def crawl_cate_stock():
     browser.close()
 
 if __name__ == "__main__":
+
+    # crawl cac thong tin lien quan 
     # crawl_cate_all()
     # crawl_cate_stock()
 
@@ -92,5 +94,7 @@ if __name__ == "__main__":
 
     # crawl san giao dich roi push len 
     # crawl_exchange()
-    push_name_and_exchange_all()
-    
+    # push_name_and_exchange_all()
+    # push_name_and_exchange_revert_all()
+
+    pass 

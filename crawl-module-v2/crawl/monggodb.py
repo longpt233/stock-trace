@@ -144,5 +144,39 @@ def push_name_and_exchange_all():
     myclient.close() 
     pass  
 
+
+def push_name_and_exchange_revert_all():
+    myclient = MongoClient(MONGO_URL)
+    db = myclient[db_name]
+ 
+    f = open('./data/exchange-all.json')
+    data = json.load(f) 
+
+    dict_exchange={
+        "HOSE":[],
+        "UPCOM":[],
+        "HNX":[]
+    }
+
+    for name_exchange in data["data"]:
+        for key, value in name_exchange.items():
+            if "HOSE" == value:
+                dict_exchange["HOSE"].append(key)
+            if "HNX" == value:
+                dict_exchange["HNX"].append(key)
+            if "UPCOM" == value:
+                dict_exchange["UPCOM"].append(key)
+    
+
+    stock_json = {
+        "name" :"exchange_revert", 
+        "description" :"danh sach cac san giao dich va cong ty trong do",
+        "data" : dict_exchange
+    }
+
+    db["stock_info"].insert_one(stock_json)
+    myclient.close() 
+    pass  
+
     
 
