@@ -5,6 +5,17 @@
 </head>
 
 <body>
+	<div id="stock_name" style="font-size: 25;">{{stock_name}}</div>
+	<button onclick="drawLineChart()">Line Chart</button>
+	<button onclick="drawCandlistickChart()">Candlistick Chart</button>
+	<button onclick="train_model()">Train Model</button>
+	<button onclick="drawChartwithPredictModel()">Predict Chart</button>
+	<button onclick="drawChartwithPredictTomorrow()">Predict Tomorrow</button>
+	<button onclick="get_list_stock()">Show my list stocks</button>
+	<div id="predicted"></div>
+	<div id="curve_chart" style="width: 600px; height: 300px; display: inline-block"></div>
+	<div id="chart_div" style="width: 600px; height: 300px; display: inline-block"></div>
+	<div id="predict_chart" style="width: 500px; height: 300px;"></div>
 	<script>
 		function httpGet(url) {
 			var xmlHttp = new XMLHttpRequest();
@@ -16,25 +27,39 @@
 			return xmlHttp.responseText;
 		}
 
+		function get_list_stock(){
+			response = httpGet('http://localhost:5000/get-list-my-stock')
+			json_stock = JSON.parse(response)
+			list_stock = json_stock['list_stock']
+			console.log(list_stock);
+		}
+
+		function train_model(){
+			var code = document.getElementById('stock_name').innerHTML
+			response = httpGet('http://localhost:5000/model/train?code='+code)
+		}
+	</script>
+	<script>
+		var code = document.getElementById('stock_name').innerHTML
+
 		google.charts.load('current', { 'packages': ['corechart'] });
 		// google.charts.setOnLoadCallback(drawChart);
-
+		
 		// Line chart
 		function drawLineChart() {
-			data_stock = httpGet('http://localhost:5000/data?code=SCG')
+			data_stock = httpGet('http://localhost:5000/data?code='+code)
 			json_data = JSON.parse(data_stock)
 			data = json_data['data']
 			console.log(data[0]);
 			for (i=0; i < data.length; i++){
 				data[i].splice(0, 0 , i+2000) // thêm ngày
-				data[i][6]  = data[i][6] / 100000
+				data[i][5]  = data[i][5] / 100000
 			}
-			data.splice(0, 0, ['Day', 'adjust', 'close', 'open', 'high', 'low', 'volume'])
-			console.log(data);
+			data.splice(0, 0, ['Day', 'open', 'high', 'low', 'close', 'volume'])
 
 			var data_table = google.visualization.arrayToDataTable(data);
 			var options = {
-				title: 'Company Performance',
+				title: 'Stock Price',
 				curveType: 'function',
 				legend: { position: 'bottom' }
 			};
@@ -44,18 +69,16 @@
 
 		// Candlistick Chart
 		function drawCandlistickChart() {
-			data_stock = httpGet('http://localhost:5000/data?code=SCG')
+			data_stock = httpGet('http://localhost:5000/data?code='+code)
 			json_data = JSON.parse(data_stock)
 			data = json_data['data']
 			console.log(data[0]);
 			for (i=0; i < data.length; i++){
 				data[i].splice(0, 0 , i+2000); // thêm ngày
-				data[i].splice(1, 1);
 				data[i].splice(5, 1);
 				// data[i].splice(1, 0, data[i].pop());
 			}
 			data.splice(0, 0, ['Day', 'low', 'close', 'open', 'high'])
-			console.log(data);
 
 			var data_table = google.visualization.arrayToDataTable(data);
 			var options = {
@@ -67,13 +90,13 @@
 			chart.draw(data_table, options);
 		}
 
-		// Predict
-		function drawChartwithPredict() {
-			data_stock = httpGet('http://localhost:5000/data?code=SCG')
+		// Predict Model
+		function drawChartwithPredictModel() {
+			data_stock = httpGet('http://localhost:5000/data?code='+code)
 			json_data = JSON.parse(data_stock)
 			data_stock = json_data['data']
 
-			predicted = httpGet('http://localhost:5000/model/predict?code=SCG')
+			predicted = httpGet('http://localhost:5000/model/predict_model?code='+code)
 			json_predict = JSON.parse(predicted)
 			data_predict = json_predict['predicted']
 
@@ -96,13 +119,16 @@
 			var chart = new google.visualization.LineChart(document.getElementById('predict_chart'));
 			chart.draw(data_table, options);
 		}
+
+		// Predict Tomorrow
+		function drawChartwithPredictTomorrow() {
+			predicted = httpGet('http://localhost:5000/model/predict?code='+code)
+			json_predict = JSON.parse(predicted)
+			data_predict = json_predict['predicted']
+
+			document.getElementById('predicted').innerHTML = 'Predict stock price for tomorrow: ' + data_predict
+		}
 	</script>
-	<div id="curve_chart" style="width: 600px; height: 300px"></div>
-	<div id="chart_div" style="width: 600px; height: 300px;"></div>
-	<div id="predict_chart" style="width: 500px; height: 300px;"></div>
-	<button onclick="drawLineChart()">Line Chart</button>
-	<button onclick="drawCandlistickChart()">Candlistick Chart</button>
-	<button onclick="drawChartwithPredict()">Predict Chart</button>
 </body>
 
 </html>
