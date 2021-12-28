@@ -12,7 +12,7 @@ def crawl_one(company,start_day,end_day,dict_name_exchange):
 
     loader = utils.DataLoaderCAFE(symbol= company, start=start_day, end=end_day, exchange=exchange) 
     data_frame = loader.download()
-    time.sleep(2) 
+    time.sleep(20) 
     return data_frame  
 
 def crawl_all():
@@ -27,7 +27,7 @@ def crawl_all():
     today = datetime.datetime.today().strftime('%d/%m/%Y')    
     err_list =[]
 
-    for name in list_name[:2]: 
+    for name in list_name: 
         if monggodb.check_exist_stock(name) == False:     # nếu không tồn tại cổ phiếu đó        
             try:
                 last_time_crawl = "01/01/2015"   
@@ -65,6 +65,7 @@ def crawl_all():
                 err_list.append(name)  
     
     print("total err = {}, list ={}".format(len(err_list), err_list))
+    return err_list
    
     
     
