@@ -43,6 +43,7 @@ def crawl_all():
                 print("first time crawl {}, numday = {}, from day {}, to day {}".format(name,len(data_list),last_time_crawl, today))
         
             except Exception as e : 
+                print(e)
                 err_list.append(name)
         else:                   
             try: 
@@ -60,8 +61,11 @@ def crawl_all():
                 
                 # push 
                 monggodb.push_com_price_v1(name,data_list[::-1][1:])  # lay 1 vi ham crwa crawl thua cai dau 
+                print("second time crawl {}, numday = {}, from day {}, to day {}".format(name,len(data_list),last_time_crawl, today))
+        
                 
             except Exception as e :  
+                print(e)
                 err_list.append(name)  
     
     print("total err = {}, list ={}".format(len(err_list), err_list))

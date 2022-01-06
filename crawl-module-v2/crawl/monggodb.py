@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import json
 import config
+from datetime import datetime
 
 MONGO_URL = config.MONGO_URL
 
@@ -37,6 +38,8 @@ def push_com_price_v1(stock_name,data_append_list):
         print("append to stock",stock_name," value= ", data_append)
         collection.update_one({'name': stock_name}, {'$push': {'data': data_append}})
 
+    collection.update_one({'name': stock_name}, {'$set':{"last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}})
+
     # close 
     myclient_need_close.close()
 
@@ -47,7 +50,8 @@ def push_com_price_v1_first_time(stock_name,data_first):
 
     stock_price_json = {
         "name" : stock_name, 
-        "data" : data_first   # list
+        "data" : data_first,   # list
+        "last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
     collection.insert_one(stock_price_json)
 
@@ -80,7 +84,8 @@ def push_com_name_all():
         "name" :"name_all", 
         "description" :"danh sach tat ca cac cong ty",
         "data" : company_list,
-        "length" : len(company_list)
+        "length" : len(company_list),
+        "last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
 
     db["stock_info"].insert_one(stock_name_json)
@@ -101,7 +106,8 @@ def push_cate_name_all():
         "name" :"cate_all", 
         "description" :"danh sach tat ca cac nhom nganh",
         "data" : cate_list,
-        "length" : len(cate_list)
+        "length" : len(cate_list),
+        "last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
 
     db["stock_info"].insert_one(stock_name_json)
@@ -119,7 +125,8 @@ def push_cate_with_all_stock():
     stock_name_json = {
         "name" :"cate_name", 
         "description" :"danh sach cac cong ty trong nhom nganh",
-        "data" : data
+        "data" : data,
+        "last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
 
     db["stock_info"].insert_one(stock_name_json)
@@ -137,7 +144,8 @@ def push_name_and_exchange_all():
         "name" :"exchange_all", 
         "description" :"danh sach tat ca cac cong ty cung san giao dich",
         "data" : data["data"],
-        "length" : len(data["data"])
+        "length" : len(data["data"]),
+        "last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
 
     db["stock_info"].insert_one(stock_name_json)
@@ -171,7 +179,8 @@ def push_name_and_exchange_revert_all():
     stock_json = {
         "name" :"exchange_revert", 
         "description" :"danh sach cac san giao dich va cong ty trong do",
-        "data" : dict_exchange
+        "data" : dict_exchange,
+        "last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
 
     db["stock_info"].insert_one(stock_json)

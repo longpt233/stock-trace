@@ -1,3 +1,5 @@
+from time import time
+from datetime import datetime
 from pymongo import MongoClient
 import config
 
@@ -36,6 +38,8 @@ def push_com_price_v1(stock_name,data_append_list):
     for data_append in data_append_list:
         print("append to stock",stock_name," value= ", data_append)
         collection.update_one({'name': stock_name}, {'$push': {'data': data_append}})
+        
+    collection.update_one({'name': stock_name}, {'$set':{"last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}})
 
     # close 
     myclient_need_close.close()
@@ -47,7 +51,8 @@ def push_com_price_v1_first_time(stock_name,data_first):
 
     stock_price_json = {
         "name" : stock_name, 
-        "data" : data_first   # list
+        "data" : data_first,   # list
+        "last-update": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
     collection.insert_one(stock_price_json)
 
