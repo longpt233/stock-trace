@@ -4,4 +4,3 @@
 __pycache__
 *.log
 *.pkl
-config.py
